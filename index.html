@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        var xmlString = ['<test>',
+            '<Result>',
+            '<Name>Player1</Name>',
+            '<job>0</job>',
+            '<Age>10</Age>',
+            '</Result>',
+            '<Notepad>',
+            '<Name>Player1</Name>',
+            '<Notes>example notes....</Notes>',
+            '</Notepad>',
+            '</test>'].join('');
+
+        var parser = new DOMParser();
+        var xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+        /**
+         * This function assumes xml document
+         * and player name as a arguments and
+         * returns notes for this player if
+         * this player exists false otherwise.
+         *
+         * @author Georgi Naumov
+         * gonaumov@gmail.com for contacts and
+         * suggestions.
+         */
+        function getPlayerNotes(xmlDoc, playerName) {
+            var xpathQuery = [
+                '//Notepad[Name[text()=\'',
+                playerName,
+                '\']]/Notes'
+            ].join(''), recordsCount;
+
+            recordsCount = xmlDoc.evaluate('count(' + xpathQuery + ')', xmlDoc, null, XPathResult.NUMBER_TYPE, null);
+
+            if (recordsCount.numberValue === 0) {
+                return false;
+            }
+
+            return (xmlDoc.evaluate(xpathQuery, xmlDoc, null, XPathResult.STRING_TYPE, null)).stringValue;
+        }
+
+        console.log(getPlayerNotes(xmlDoc, 'Player1'));
+        console.log(getPlayerNotes(xmlDoc, 'NotExisting'));
+    </script>
+</head>
+<body>
+<h1>Check browser console</h1>
+</body>
+</html>
